@@ -33,8 +33,9 @@ http:
     admin-filter:
       plugin:
         domain_converter:
-          adminServiceUrl: "http://domain-lookup"
+          lookupServiceUrl: "http://domain-lookup"
           defaultTtl: 60
+          domainIdHeader: "x-domain-id"
 
   routers:
     my-router:
@@ -48,7 +49,7 @@ http:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `adminServiceUrl` | string | `http://domain-lookup` | Base URL of the admin lookup service |
+| `lookupServiceUrl` | string | `http://domain-lookup` | Base URL of the admin lookup service |
 | `defaultTtl` | int | `60` | Default cache TTL in seconds when no Cache-Control header is present |
 | `domainIdHeader` | string | `x-domain-id` | DomainHeader to pass id |
 
