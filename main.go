@@ -16,6 +16,7 @@ type Config struct {
 	LookupServiceURL string `json:"lookupServiceUrl,omitempty"`
 	DefaultTTL       int    `json:"defaultTtl,omitempty"`
 	DomainIDHeader   string `json:"domainIdHeader,omitempty"`
+	URLPath          string `json:"urlPath,omitempty"`
 }
 
 // CreateConfig creates the default plugin configuration.
@@ -205,7 +206,8 @@ func (a *DomainLookupFilter) isIPAllowed(clientIP string, allowedIPs []string) b
 
 // lookupDomain makes an HTTP call to the admin lookup service
 func (a *DomainLookupFilter) lookupDomain(hostname string) (string, int, string, error) {
-	lookupURL := fmt.Sprintf("%s/api/admin-domain/domain-to-agency-id?domain=%s", a.config.LookupServiceURL, hostname)
+	// lookupURL := fmt.Sprintf("%s/api/admin-domain/domain-to-agency-id?domain=%s", a.config.LookupServiceURL, hostname)
+	lookupURL := fmt.Sprintf("%s%s?domain=%s", a.config.LookupServiceURL, a.config.URLPath, hostname)
 
 	client := &http.Client{
 		Timeout: 1 * time.Second,

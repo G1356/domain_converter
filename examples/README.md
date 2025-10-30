@@ -143,6 +143,7 @@ http:
         header_converter:
           lookupServiceUrl: "http://localhost:3001"
           defaultTtl: 60  # Shorter TTL for development
+          urlPath: /api/domain-lookup
 ```
 
 ### Production
@@ -154,6 +155,7 @@ http:
         header_converter:
           lookupServiceUrl: "https://admin-domain.internal.company.com"
           defaultTtl: 3600  # Longer TTL for production
+          urlPath: /api/domain-lookup
 ```
 
 ## Usage Examples
@@ -230,6 +232,7 @@ http:
           lookupServiceUrl: "http://admin-domain"
           defaultTtl: 60
           domainIdHeader: "x-domain-id"
+          urlPath: /api/domain-lookup
 ```
 
 ### Health Check Route

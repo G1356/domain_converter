@@ -36,6 +36,7 @@ http:
           lookupServiceUrl: "http://domain-lookup"
           defaultTtl: 60
           domainIdHeader: "x-domain-id"
+          urlPath: /api/domain-lookup
 
   routers:
     my-router:
@@ -52,10 +53,11 @@ http:
 | `lookupServiceUrl` | string | `http://domain-lookup` | Base URL of the admin lookup service |
 | `defaultTtl` | int | `60` | Default cache TTL in seconds when no Cache-Control header is present |
 | `domainIdHeader` | string | `x-domain-id` | DomainHeader to pass id |
+| `urlPath` | string | `/api/domain-lookup` | Url path that will be called |
 
 ## API Contract
 
-The plugin expects the admin service to respond to GET requests at `/api/admin-domain/domain-to-agency-id?domain={hostname}` with:
+The plugin expects the admin service to respond to GET requests at urlPath set at config with:
 
 ### Success Response (HTTP 200)
 - **Body**: `{uuid}|{ip1,ip2,ip3}` - Agency UUID followed by comma-separated allowed IPs
@@ -139,6 +141,8 @@ Expand-Archive -Path "domain_converter.zip" -DestinationPath "."
         Header name for domain ID (default "x-domain-id")
   -lookup-url string
         URL for domain lookup service (default "http://domain")
+  -urlPath string
+        URL Path for domain lookup service (default "/api/domain-lookup")
   -port string
         Port to run the server on (default "8080")
   -ttl int
