@@ -8,9 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial CLI application wrapper
-- Cross-platform binary builds
-- GitHub Actions workflow for automated releases
+- N/A
 
 ### Changed
 - N/A
@@ -27,14 +25,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - N/A
 
-## [v1.0.0] - YYYY-MM-DD
+## [v1.0.0] - 2025-10-30
 
 ### Added
-- Initial release of domain converter
-- Basic domain lookup functionality
-- Caching mechanism with TTL support
-- Configurable lookup service URL
-- HTTP middleware implementation
+- Initial release of domain converter Traefik plugin
+- Domain-to-Agency-ID lookup functionality
+- Client IP validation against allowed IP lists
+- In-memory caching with configurable TTL
+- Support for redirect responses (HTTP 201)
+- Request header injection (`x-agency-id`)
+- Comprehensive error handling and logging
+- CLI application wrapper for standalone usage
+- Cross-platform binary builds via GitHub Actions
+- Automated release pipeline
+- Complete documentation and examples
 
-[Unreleased]: https://github.com/yourusername/domain_converter/compare/v1.0.0...HEAD
-[v1.0.0]: https://github.com/yourusername/domain_converter/releases/tag/v1.0.0
+### Configuration Options
+- `lookupServiceUrl`: URL for domain lookup service
+- `defaultTtl`: Default cache TTL in seconds
+- `domainIdHeader`: Header name for domain ID
+- `urlPath`: URL path for domain lookup API
+
+[Unreleased]: https://github.com/G1356/domain_converter/compare/v1.0.0...HEAD
+[v1.0.0]: https://github.com/G1356/domain_converter/releases/tag/v1.0.0

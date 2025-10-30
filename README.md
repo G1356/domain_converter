@@ -21,7 +21,7 @@ pilot:
 experimental:
   plugins:
     domain_converter:
-      modulename: github.com/yourusername/domain_converter
+      modulename: github.com/G1356/domain_converter
       version: v1.0.0
 ```
 
