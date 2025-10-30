@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="v1.0.0"
+VERSION="v1.0.1"
 MESSAGE="Initial release for Traefik Plugin Catalog"
 
 echo "🚀 Preparing release for Traefik Plugin Catalog submission..."
