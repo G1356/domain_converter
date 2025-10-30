@@ -44,7 +44,7 @@ accessLog: {}
 http:
   # Middlewares
   middlewares:
-    admin-filter:
+    domain-lookup:
       plugin:
         header_converter:
           lookupServiceUrl: "http://admin-domain:8080"
@@ -65,7 +65,7 @@ http:
     api-router:
       rule: "Host(`api.example.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
         - security-headers
       service: api-service
       entryPoints:
@@ -74,7 +74,7 @@ http:
     admin-router:
       rule: "Host(`admin.example.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
       service: admin-service
       entryPoints:
         - web
@@ -138,7 +138,7 @@ networks:
 ```yaml
 http:
   middlewares:
-    admin-filter-dev:
+    domain-lookup-dev:
       plugin:
         header_converter:
           lookupServiceUrl: "http://localhost:3001"
@@ -150,7 +150,7 @@ http:
 ```yaml
 http:
   middlewares:
-    admin-filter-prod:
+    domain-lookup-prod:
       plugin:
         header_converter:
           lookupServiceUrl: "https://admin-domain.internal.company.com"
@@ -167,7 +167,7 @@ http:
     my-app:
       rule: "Host(`myapp.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
       service: my-app-service
 ```
 
@@ -184,7 +184,7 @@ http:
     protected-api:
       rule: "Host(`api.myapp.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
         - rate-limit
       service: api-service
 ```
@@ -211,7 +211,7 @@ http:
     api-with-cors:
       rule: "Host(`api.myapp.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
         - cors
       service: api-service
 ```
@@ -226,7 +226,7 @@ log:
 # Add to middleware configuration for detailed logging
 http:
   middlewares:
-    admin-filter-debug:
+    domain-lookup-debug:
       plugin:
         header_converter:
           lookupServiceUrl: "http://admin-domain"
@@ -242,5 +242,5 @@ http:
     health-check:
       rule: "Host(`myapp.com`) && Path(`/health`)"
       service: health-service
-      # No admin-filter middleware for health checks
+      # No domain-lookup middleware for health checks
 ```

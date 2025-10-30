@@ -132,7 +132,7 @@ providers:
 # dynamic.yml
 http:
   middlewares:
-    admin-filter:
+    domain-lookup:
       plugin:
         header_converter:
           adminServiceUrl: "http://admin-domain:8080"
@@ -142,7 +142,7 @@ http:
     api-router:
       rule: "Host(`api.example.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
       service: api-service
 
   services:
@@ -208,7 +208,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`api.example.com`)"
-      - "traefik.http.routers.backend.middlewares=admin-filter"
+      - "traefik.http.routers.backend.middlewares=domain-lookup"
 
 networks:
   web:
@@ -248,7 +248,7 @@ data:
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-  name: admin-filter
+  name: domain-lookup
 spec:
   plugin:
     header_converter:
@@ -270,7 +270,7 @@ spec:
     - match: Host(`api.example.com`)
       kind: Rule
       middlewares:
-        - name: admin-filter
+        - name: domain-lookup
       services:
         - name: api-service
           port: 80

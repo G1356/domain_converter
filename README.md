@@ -30,7 +30,7 @@ experimental:
 ```yaml
 http:
   middlewares:
-    admin-filter:
+    domain-lookup:
       plugin:
         domain_converter:
           lookupServiceUrl: "http://domain-lookup"
@@ -42,7 +42,7 @@ http:
     my-router:
       rule: "Host(`example.com`)"
       middlewares:
-        - admin-filter
+        - domain-lookup
       service: my-service
 ```
 
