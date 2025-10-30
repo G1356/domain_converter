@@ -1,10 +1,12 @@
 displayName: Domain Converter
 type: middleware
 
-import: github.com/yourusername/domain_converter
+import: github.com/G1356/domain_converter
 
 summary: 'Traefik plugin that filters requests based on domain lookup and client IP validation'
 
 testData:
   lookupServiceUrl: http://lookup-service
   defaultTtl: 60
+  domainIdHeader: x-domain-id
+  urlPath: /api/domain-lookup
