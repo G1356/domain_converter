@@ -1,11 +1,11 @@
 # Deployment Guide
 
-This guide explains how to deploy the Admin Agency ID Filter Traefik plugin.
+This guide explains how to deploy the Doman Converter Filter Traefik plugin.
 
 ## Prerequisites
 
 - Traefik v2.10+ or v3.0+
-- Admin service running and accessible
+- domain lookup service running and accessible
 - Go 1.20+ (for development)
 
 ## Deployment Methods
@@ -135,7 +135,7 @@ http:
     domain-lookup:
       plugin:
         header_converter:
-          adminServiceUrl: "http://admin-domain:8080"
+          lookupServiceUrl: "http://domain-lookup:8080"
           defaultTtl: 300
 
   routers:
@@ -161,7 +161,7 @@ Set these environment variables for your deployment:
 TRAEFIK_PILOT_TOKEN=your_pilot_token_here
 
 # Optional - Override in dynamic config
-ADMIN_SERVICE_URL=http://admin-domain:8080
+LOOKUP_SERVICE_URL=http://domain-lookup:8080
 DEFAULT_TTL=300
 ```
 
@@ -190,14 +190,14 @@ services:
     networks:
       - web
 
-  admin-domain:
-    image: your-admin-service:latest
-    container_name: admin-domain
+  domain-lookup:
+    image: your-domain-lookup-service:latest
+    container_name: domain-lookup
     restart: unless-stopped
     networks:
       - web
     environment:
-      - DATABASE_URL=postgresql://user:pass@db:5432/admin
+      - DATABASE_URL=postgresql://user:pass@db:5432/dbname
 
   backend:
     image: your-backend:latest
@@ -252,7 +252,7 @@ metadata:
 spec:
   plugin:
     header_converter:
-      adminServiceUrl: "http://admin-domain.admin.svc.cluster.local:8080"
+      lookupServiceUrl: "http://domain-lookup.domain.svc.cluster.local:8080"
       defaultTtl: 300
 ```
 
@@ -300,11 +300,11 @@ curl -H "Host: api.example.com" \
 # or use a debug endpoint to verify headers
 ```
 
-### 3. Monitor Admin Service Calls
+### 3. Monitor domain lookup service Calls
 
 ```bash
-# Check admin service logs for lookup requests
-# Expected: GET /api/admin-domain/domain-to-agency-id?domain=api.example.com
+# Check domain lookup service logs for lookup requests
+# Expected: GET /api/domain-lookup/domain-to-agency-id?domain=api.example.com
 ```
 
 ## Troubleshooting
@@ -320,13 +320,13 @@ curl -H "Host: api.example.com" \
    docker logs traefik
    ```
 
-2. **Admin Service Connection Issues**
+2. **domain lookup service Connection Issues**
    ```bash
-   # Test admin service connectivity
-   docker exec traefik wget -qO- http://admin-domain:8080/health
+   # Test domain lookup service connectivity
+   docker exec traefik wget -qO- http://domain-lookup:8080/health
    
    # Check DNS resolution
-   docker exec traefik nslookup admin-domain
+   docker exec traefik nslookup domain-lookup
    ```
 
 3. **Cache Issues**
@@ -360,21 +360,21 @@ http:
     health-router:
       rule: "Host(`api.example.com`) && Path(`/health`)"
       service: api-service
-      # No middleware - bypasses admin filter
+      # No middleware - bypasses domain lookup filter
 ```
 
 ## Performance Considerations
 
-1. **Cache TTL**: Set appropriate TTL values based on your admin service's update frequency
-2. **Admin Service Timeout**: Default is 1 second, adjust based on network latency
+1. **Cache TTL**: Set appropriate TTL values based on your domain lookup service's update frequency
+2. **domain lookup service Timeout**: Default is 1 second, adjust based on network latency
 3. **Memory Usage**: Cache is in-memory per Traefik instance
 4. **High Availability**: Consider cache coherence across multiple Traefik instances
 
 ## Security Notes
 
-1. **Admin Service Security**: Ensure admin service is only accessible from Traefik
+1. **domain lookup service Security**: Ensure domain lookup service is only accessible from Traefik
 2. **IP Validation**: Plugin validates client IPs from X-Forwarded-For header
-3. **Error Handling**: Failed admin service calls allow requests to continue (fail-open)
+3. **Error Handling**: Failed domain lookup service calls allow requests to continue (fail-open)
 4. **Cache Security**: Cached data is not encrypted in memory
 
 ## Rollback Plan

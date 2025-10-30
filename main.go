@@ -204,9 +204,9 @@ func (a *DomainLookupFilter) isIPAllowed(clientIP string, allowedIPs []string) b
 	return false
 }
 
-// lookupDomain makes an HTTP call to the admin lookup service
+// lookupDomain makes an HTTP call to the domain lookup service
 func (a *DomainLookupFilter) lookupDomain(hostname string) (string, int, string, error) {
-	// lookupURL := fmt.Sprintf("%s/api/admin-domain/domain-to-agency-id?domain=%s", a.config.LookupServiceURL, hostname)
+	// lookupURL := fmt.Sprintf("%s/api/domain-lookup/domain-to-agency-id?domain=%s", a.config.LookupServiceURL, hostname)
 	lookupURL := fmt.Sprintf("%s%s?domain=%s", a.config.LookupServiceURL, a.config.URLPath, hostname)
 
 	client := &http.Client{

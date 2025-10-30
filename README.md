@@ -1,13 +1,13 @@
-# Admin Agency ID Filter Traefik Plugin
+# Doman Converter Filter Traefik Plugin
 
 This Traefik plugin converts the functionality from the original WebAssembly proxy code to filter HTTP requests based on domain lookup and client IP validation.
 
 ## Features
 
-- **Domain-to-Agency-ID Lookup**: Queries an admin service to get agency information for incoming domains
+- **Domain-to-Agency-ID Lookup**: Queries an domain lookup service to get agency information for incoming domains
 - **Client IP Validation**: Validates that the client IP is allowed for the specific domain
 - **Caching**: In-memory caching of lookup results with configurable TTL
-- **Redirect Support**: Handles redirect responses (HTTP 201) from the admin service
+- **Redirect Support**: Handles redirect responses (HTTP 201) from the domain lookup service
 - **Request Header Injection**: Adds `x-agency-id` header to validated requests
 
 ## Configuration
@@ -50,14 +50,14 @@ http:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `lookupServiceUrl` | string | `http://domain-lookup` | Base URL of the admin lookup service |
+| `lookupServiceUrl` | string | `http://domain-lookup` | Base URL of the domain lookup service |
 | `defaultTtl` | int | `60` | Default cache TTL in seconds when no Cache-Control header is present |
 | `domainIdHeader` | string | `x-domain-id` | DomainHeader to pass id |
 | `urlPath` | string | `/api/domain-lookup` | Url path that will be called |
 
 ## API Contract
 
-The plugin expects the admin service to respond to GET requests at urlPath set at config with:
+The plugin expects the domain lookup service to respond to GET requests at urlPath set at config with:
 
 ### Success Response (HTTP 200)
 - **Body**: `{uuid}|{ip1,ip2,ip3}` - Agency UUID followed by comma-separated allowed IPs
@@ -74,7 +74,7 @@ The plugin expects the admin service to respond to GET requests at urlPath set a
 
 1. **Cache Check**: First checks if domain info is cached and not expired
 2. **IP Validation**: Extracts client IP from `X-Forwarded-For` header (first IP) or `RemoteAddr`
-3. **Domain Lookup**: If not cached, queries the admin service
+3. **Domain Lookup**: If not cached, queries the domain lookup service
 4. **Response Handling**:
    - **200**: Validates IP and sets `x-agency-id` header if allowed
    - **201**: Redirects to the provided URL
@@ -97,7 +97,7 @@ The plugin extracts client IP in the following order:
 
 ## Error Handling
 
-- Network errors during admin service lookup allow the request to continue
+- Network errors during domain lookup service lookup allow the request to continue
 - Invalid responses return appropriate HTTP error codes
 - Malformed domain info is handled gracefully
 

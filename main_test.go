@@ -10,7 +10,7 @@ import (
 
 func TestNew(t *testing.T) {
 	config := CreateConfig()
-	config.LookupServiceURL = "http://test-admin"
+	config.LookupServiceURL = "http://test-domain"
 	config.DefaultTTL = 120
 
 	next := http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
@@ -24,11 +24,11 @@ func TestNew(t *testing.T) {
 
 	plugin, ok := handler.(*DomainLookupFilter)
 	if !ok {
-		t.Fatal("Expected AdminAgencyIdFilter type")
+		t.Fatal("Expected DomainLookupFilter type")
 	}
 
-	if plugin.config.LookupServiceURL != "http://test-admin" {
-		t.Errorf("Expected adminServiceUrl to be 'http://test-admin', got %s", plugin.config.LookupServiceURL)
+	if plugin.config.LookupServiceURL != "http://test-domain" {
+		t.Errorf("Expected lookupServiceUrl to be 'http://test-domain', got %s", plugin.config.LookupServiceURL)
 	}
 
 	if plugin.config.DefaultTTL != 120 {
@@ -36,7 +36,7 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestNewWithEmptyAdminServiceURL(t *testing.T) {
+func TestNewWithEmptylookupServiceUrl(t *testing.T) {
 	config := CreateConfig()
 	config.LookupServiceURL = ""
 
@@ -44,7 +44,7 @@ func TestNewWithEmptyAdminServiceURL(t *testing.T) {
 
 	_, err := New(context.Background(), next, config, "test")
 	if err == nil {
-		t.Fatal("Expected error for empty adminServiceUrl")
+		t.Fatal("Expected error for empty lookupServiceUrl")
 	}
 }
 

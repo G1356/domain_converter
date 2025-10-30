@@ -1,6 +1,6 @@
 # Example Traefik Configuration
 
-This directory contains example configurations for using the Admin Agency ID Filter plugin with Traefik.
+This directory contains example configurations for using the Doman Converter Filter plugin with Traefik.
 
 ## Static Configuration (traefik.yml)
 
@@ -47,7 +47,7 @@ http:
     domain-lookup:
       plugin:
         header_converter:
-          lookupServiceUrl: "http://admin-domain:8080"
+          lookupServiceUrl: "http://domain-lookup:8080"
           defaultTtl: 300
           domainIdHeader: "x-domain-id"
 
@@ -71,11 +71,11 @@ http:
       entryPoints:
         - web
 
-    admin-router:
-      rule: "Host(`admin.example.com`)"
+    domain-router:
+      rule: "Host(`domain.example.com`)"
       middlewares:
         - domain-lookup
-      service: admin-service
+      service: domain-service
       entryPoints:
         - web
 
@@ -86,10 +86,10 @@ http:
         servers:
           - url: "http://api-backend:3000"
 
-    admin-service:
+    domain-service:
       loadBalancer:
         servers:
-          - url: "http://admin-backend:8080"
+          - url: "http://domain-backend:8080"
 ```
 
 ## Docker Compose Example
@@ -113,12 +113,12 @@ services:
     networks:
       - web
 
-  admin-domain:
-    image: admin-domain-service:latest
+  domain-lookup:
+    image: domain-lookup-service:latest
     networks:
       - web
     environment:
-      - DATABASE_URL=postgresql://user:pass@db:5432/admin
+      - DATABASE_URL=postgresql://user:pass@db:5432/dbname
     
   api-backend:
     image: api-service:latest
@@ -153,7 +153,7 @@ http:
     domain-lookup-prod:
       plugin:
         header_converter:
-          lookupServiceUrl: "https://admin-domain.internal.company.com"
+          lookupServiceUrl: "https://domain-lookup.internal.company.com"
           defaultTtl: 3600  # Longer TTL for production
           urlPath: /api/domain-lookup
 ```
@@ -229,7 +229,7 @@ http:
     domain-lookup-debug:
       plugin:
         header_converter:
-          lookupServiceUrl: "http://admin-domain"
+          lookupServiceUrl: "http://domain-lookup"
           defaultTtl: 60
           domainIdHeader: "x-domain-id"
           urlPath: /api/domain-lookup
