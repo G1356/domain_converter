@@ -2,7 +2,7 @@
 # PowerShell version for Windows
 
 param(
-    [string]$Version = "v1.0.0",
+    [string]$Version = "v1.0.1",
     [string]$Message = "Initial release for Traefik Plugin Catalog"
 )
 
