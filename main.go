@@ -87,7 +87,7 @@ func (a *DomainConverter) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 			clientIP := a.getClientIP(req)
 			uuid, allowedIPs := a.parseDomainInfo(entry.Value)
 
-			if !a.isIPAllowed(clientIP, allowedIPs) {
+			if len(allowedIPs) > 0 && !a.isIPAllowed(clientIP, allowedIPs) {
 				http.Error(rw, "Unauthorized", http.StatusUnauthorized)
 				return
 			}
@@ -116,7 +116,7 @@ func (a *DomainConverter) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		clientIP := a.getClientIP(req)
 		uuid, allowedIPs := a.parseDomainInfo(domainInfo)
 
-		if !a.isIPAllowed(clientIP, allowedIPs) {
+		if len(allowedIPs) > 0 && !a.isIPAllowed(clientIP, allowedIPs) {
 			http.Error(rw, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
@@ -128,7 +128,7 @@ func (a *DomainConverter) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 
 		// Set UUID as x-agency-id header
-		req.Header.Set("x-agency-id", uuid)
+		req.Header.Set(a.config.DomainIDHeader, uuid)
 		a.next.ServeHTTP(rw, req)
 
 	case 201:
@@ -170,6 +170,9 @@ func (a *DomainConverter) getClientIP(req *http.Request) string {
 
 // parseDomainInfo parses the domain info string format: "uuid|ip1,ip2,ip3"
 func (a *DomainConverter) parseDomainInfo(domainInfo string) (string, []string) {
+	if !strings.Contains(domainInfo, "|") {
+		return domainInfo, []string{}
+	}
 	parts := strings.Split(domainInfo, "|")
 	if len(parts) < 2 {
 		return "", []string{}
