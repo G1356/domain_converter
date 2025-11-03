@@ -35,8 +35,8 @@ type CacheEntry struct {
 	IsRedirect bool
 }
 
-// DomainLookupFilter plugin struct
-type DomainLookupFilter struct {
+// DomainConverter plugin struct
+type DomainConverter struct {
 	config *Config
 	name   string
 	next   http.Handler
@@ -54,7 +54,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		config.DefaultTTL = 60
 	}
 
-	return &DomainLookupFilter{
+	return &DomainConverter{
 		config: config,
 		name:   name,
 		next:   next,
@@ -63,7 +63,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 	}, nil
 }
 
-func (a *DomainLookupFilter) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
+func (a *DomainConverter) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	hostname := req.Host
 	if hostname == "" {
 		a.next.ServeHTTP(rw, req)
@@ -150,7 +150,7 @@ func (a *DomainLookupFilter) ServeHTTP(rw http.ResponseWriter, req *http.Request
 }
 
 // getClientIP extracts the client IP from X-Forwarded-For header or RemoteAddr
-func (a *DomainLookupFilter) getClientIP(req *http.Request) string {
+func (a *DomainConverter) getClientIP(req *http.Request) string {
 	xForwardedFor := req.Header.Get("X-Forwarded-For")
 	if xForwardedFor != "" {
 		// Take the first IP from the comma-separated list
@@ -169,7 +169,7 @@ func (a *DomainLookupFilter) getClientIP(req *http.Request) string {
 }
 
 // parseDomainInfo parses the domain info string format: "uuid|ip1,ip2,ip3"
-func (a *DomainLookupFilter) parseDomainInfo(domainInfo string) (string, []string) {
+func (a *DomainConverter) parseDomainInfo(domainInfo string) (string, []string) {
 	parts := strings.Split(domainInfo, "|")
 	if len(parts) < 2 {
 		return "", []string{}
@@ -191,7 +191,7 @@ func (a *DomainLookupFilter) parseDomainInfo(domainInfo string) (string, []strin
 }
 
 // isIPAllowed checks if the client IP is in the allowed IPs list
-func (a *DomainLookupFilter) isIPAllowed(clientIP string, allowedIPs []string) bool {
+func (a *DomainConverter) isIPAllowed(clientIP string, allowedIPs []string) bool {
 	if len(allowedIPs) == 0 {
 		return true // No restrictions
 	}
@@ -205,7 +205,7 @@ func (a *DomainLookupFilter) isIPAllowed(clientIP string, allowedIPs []string) b
 }
 
 // lookupDomain makes an HTTP call to the domain lookup service
-func (a *DomainLookupFilter) lookupDomain(hostname string) (string, int, string, error) {
+func (a *DomainConverter) lookupDomain(hostname string) (string, int, string, error) {
 	// lookupURL := fmt.Sprintf("%s/api/domain-lookup/domain-to-agency-id?domain=%s", a.config.LookupServiceURL, hostname)
 	lookupURL := fmt.Sprintf("%s%s?domain=%s", a.config.LookupServiceURL, a.config.URLPath, hostname)
 
@@ -229,7 +229,7 @@ func (a *DomainLookupFilter) lookupDomain(hostname string) (string, int, string,
 }
 
 // parseMaxAge extracts max-age value from Cache-Control header
-func (a *DomainLookupFilter) parseMaxAge(cacheControl string) int {
+func (a *DomainConverter) parseMaxAge(cacheControl string) int {
 	if cacheControl == "" {
 		return a.config.DefaultTTL
 	}
@@ -248,13 +248,13 @@ func (a *DomainLookupFilter) parseMaxAge(cacheControl string) int {
 }
 
 // Cache management methods
-func (a *DomainLookupFilter) getCacheEntry(key string) *CacheEntry {
+func (a *DomainConverter) getCacheEntry(key string) *CacheEntry {
 	a.mutex.RLock()
 	defer a.mutex.RUnlock()
 	return a.cache[key]
 }
 
-func (a *DomainLookupFilter) setCacheEntry(key, value string, expiresAt time.Time, isRedirect bool) {
+func (a *DomainConverter) setCacheEntry(key, value string, expiresAt time.Time, isRedirect bool) {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
 	a.cache[key] = &CacheEntry{
@@ -264,7 +264,7 @@ func (a *DomainLookupFilter) setCacheEntry(key, value string, expiresAt time.Tim
 	}
 }
 
-func (a *DomainLookupFilter) removeCacheEntry(key string) {
+func (a *DomainConverter) removeCacheEntry(key string) {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
 	delete(a.cache, key)

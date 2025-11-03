@@ -22,7 +22,7 @@ func TestNew(t *testing.T) {
 		t.Fatalf("Expected no error, got %v", err)
 	}
 
-	plugin, ok := handler.(*DomainLookupFilter)
+	plugin, ok := handler.(*DomainConverter)
 	if !ok {
 		t.Fatal("Expected DomainLookupFilter type")
 	}
@@ -49,7 +49,7 @@ func TestNewWithEmptylookupServiceUrl(t *testing.T) {
 }
 
 func TestGetClientIP(t *testing.T) {
-	plugin := &DomainLookupFilter{}
+	plugin := &DomainConverter{}
 
 	tests := []struct {
 		name          string
@@ -100,7 +100,7 @@ func TestGetClientIP(t *testing.T) {
 }
 
 func TestParseDomainInfo(t *testing.T) {
-	plugin := &DomainLookupFilter{}
+	plugin := &DomainConverter{}
 
 	tests := []struct {
 		name         string
@@ -156,7 +156,7 @@ func TestParseDomainInfo(t *testing.T) {
 }
 
 func TestIsIPAllowed(t *testing.T) {
-	plugin := &DomainLookupFilter{}
+	plugin := &DomainConverter{}
 
 	tests := []struct {
 		name       string
@@ -201,7 +201,7 @@ func TestIsIPAllowed(t *testing.T) {
 }
 
 func TestParseMaxAge(t *testing.T) {
-	plugin := &DomainLookupFilter{
+	plugin := &DomainConverter{
 		config: &Config{DefaultTTL: 60},
 	}
 
@@ -248,7 +248,7 @@ func TestParseMaxAge(t *testing.T) {
 }
 
 func TestCacheOperations(t *testing.T) {
-	plugin := &DomainLookupFilter{
+	plugin := &DomainConverter{
 		cache: make(map[string]*CacheEntry),
 	}
 
