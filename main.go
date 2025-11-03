@@ -57,6 +57,7 @@ func New(ctx context.Context, next http.Handler, config *Config) (http.Handler, 
 	return &DomainConverter{
 		config: config,
 		next:   next,
+		name:   "domain-converter",
 		cache:  make(map[string]*CacheEntry),
 		mutex:  sync.RWMutex{},
 	}, nil
