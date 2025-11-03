@@ -1,4 +1,4 @@
-package header_converter
+package domain_converter
 
 import (
 	"context"
