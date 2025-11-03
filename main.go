@@ -45,7 +45,7 @@ type DomainConverter struct {
 }
 
 // New created a new plugin instance.
-func New(ctx context.Context, next http.Handler, config *Config, name string) (http.Handler, error) {
+func New(ctx context.Context, next http.Handler, config *Config) (http.Handler, error) {
 	if config.LookupServiceURL == "" {
 		return nil, fmt.Errorf("lookupServiceUrl is required")
 	}
@@ -56,7 +56,6 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 
 	return &DomainConverter{
 		config: config,
-		name:   name,
 		next:   next,
 		cache:  make(map[string]*CacheEntry),
 		mutex:  sync.RWMutex{},
