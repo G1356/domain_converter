@@ -142,7 +142,7 @@ func (a *DomainConverter) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	case 404:
 		// Cache NOT FOUND result
 		a.setCacheEntry(hostname, "NOT FOUND", time.Now().Add(time.Duration(a.config.DefaultTTL)*time.Second), false)
-		http.Error(rw, "Page not found", http.StatusUnauthorized)
+		http.Error(rw, "Unauthorized (404)", http.StatusUnauthorized)
 
 	default:
 		http.Error(rw, "Unexpected error occurred", http.StatusInternalServerError)
